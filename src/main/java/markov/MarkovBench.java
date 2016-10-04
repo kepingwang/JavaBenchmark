@@ -8,11 +8,11 @@ import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.infra.Blackhole;
+import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
@@ -24,49 +24,74 @@ import cs201.keping.markov.MarkovInterface;
 import cs201.keping.markov.TextSource;
 
 @State(Scope.Thread)
-public class MyBenchmark {
-	public MarkovConfig config;
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+public class MarkovBench {
+	private static final String TEXT_FILE = "data/hawthorne.txt";
 	public MarkovInterface<String> model;
 	public String src;
-	private static final String TEXT_FILE = "data/hawthorne.txt";
 	
+	/**
+	 * Name of the model: BruteMarkov or EfficientMarkov
+	 */
+	@Param({"BruteMarkov", "EfficientMarkov"})
+	public String modelName;
+	
+	/**
+	 * Size of training text.
+	 */
+	@Param({"10000"})
+	public int N;
+	
+	/**
+	 * Size of generated text.
+	 */
+	@Param({"1000"})
+	public int T;
+	
+	/**
+	 * Order of the model.
+	 */
+	@Param({"2","3","6","12"})
+	public int k;
+
 	/**
 	 * Initialize MarkovConfig and the model.
 	 * @throws Exception 
 	 */
 	@Setup(Level.Iteration)
 	public void init() throws Exception {
-		// TODO
-		config = new MarkovConfig("EfficientMarkov", 100000, 16000, 5);
-		if (config.modelName.equals("BruteMarkov")) {
-			model = new BruteMarkov(config.k);
+		if (modelName.equals("BruteMarkov")) {
+			model = new BruteMarkov();
 		} else {
-			model = new EfficientMarkov(config.k);
+			model = new EfficientMarkov();
 		}
+		
 		src = TextSource.textFromFile(new File(TEXT_FILE))
-				.substring(0, this.config.N);
+				.substring(0, N);
 		model.setTraining(src);
 	}
-
-//	@Benchmark
-//    @BenchmarkMode(Mode.AverageTime)
-//    @OutputTimeUnit(TimeUnit.MICROSECONDS)
-//    public void testTraining(Blackhole bh) {
-//		model.setTraining(src);
-//		bh.consume(model);
-//    }
+	
+	@Benchmark
+    public void testTraining() {
+		model.setTraining(src);
+    }
     
 	@Benchmark
-	@BenchmarkMode(Mode.AverageTime)
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void testGetRandomText(Blackhole bh) {
-		model.getRandomText(config.T);
-		bh.consume(model);
+	public void testGetRandomText() {
+		int t = T;
+		String text = model.getRandomText(t);
+		while (text.length() < t) {
+			t = t - text.length();
+			text = model.getRandomText(t);
+		}
 	}
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-                .include(MyBenchmark.class.getSimpleName())
+        		.result("markov_bench.txt")
+        		.resultFormat(ResultFormatType.CSV)
+                .include(MarkovBench.class.getSimpleName())
                 .warmupIterations(5)
                 .measurementIterations(5)
                 .forks(1)
