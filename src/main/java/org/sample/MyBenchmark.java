@@ -32,13 +32,66 @@
 package org.sample;
 
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 public class MyBenchmark {
+	
+	/**
+	 * We are using the same source textFile, just cutting different length.
+	 */
+	private static final String TEXT_FILE = "data/hawthorne.txt";
 
+	/**
+	 * While testing markov, we are interested in the running time
+	 * of {@code setTraining()} and {@code getRandomText} with respect to:<br>
+	 * <b>N</b>: training text size.<br>
+	 * <b>T</b>: size of text generated using Markov model.<br>
+	 * <b>k</b>: order of the Markov model.
+	 * <p>Note that size refers to the number of characters. Time is stored
+	 * in milliseconds.</p>
+	 * @author keping
+	 */
+	private static class MarkovConfig {
+		String modelName;
+		/**
+		 * Size of training text.
+		 */
+		int N;
+		/**
+		 * Size of generated text.
+		 */
+		int T;
+		/**
+		 * order of model.
+		 */
+		int k;
+		
+		/**
+		 * Construct a {@code MarkovConfig} object.
+		 * @param N training text size.
+		 * @param T maximum allowed generated text size. Generation stops with an EOS.
+		 * @param k order of the Markov model.
+		 * @throws Exception wrong model name
+		 */
+		MarkovConfig(String modelName, int N, int T, int k) throws Exception {
+			if ( !(modelName.equals("BruteMarkov") || 
+					modelName.equals("EfficientMarkov")) ) {
+				throw new Exception("Wrong model name!");
+			}
+			this.modelName = modelName;
+			this.N = N;
+			this.T = T;
+			this.k = k;
+		}
+	}
+
+    
     @Benchmark
     public void testMethod() {
         // This is a demo/sample template for building your JMH benchmarks. Edit as needed.
         // Put your benchmark code here.
     }
+    
 
 }
