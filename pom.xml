@@ -49,6 +49,11 @@
 			<version>${jmh.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>cs201.keping</groupId>
+			<artifactId>markov</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<properties>
