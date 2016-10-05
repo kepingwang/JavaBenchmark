@@ -23,6 +23,13 @@ import cs201.keping.markov.EfficientMarkov;
 import cs201.keping.markov.MarkovInterface;
 import cs201.keping.markov.TextSource;
 
+
+/**
+ * Benchmarking the training and text-generating time
+ * of the Markov Model.
+ * @author keping
+ *
+ */
 @State(Scope.Thread)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -31,6 +38,7 @@ public class MarkovBench {
 	public MarkovInterface<String> model;
 	public String src;
 	
+	
 	/**
 	 * Name of the model: BruteMarkov or EfficientMarkov
 	 */
@@ -38,22 +46,22 @@ public class MarkovBench {
 	public String modelName;
 	
 	/**
+	 * Order of the model.
+	 */
+	@Param({"6"})
+	public int k;
+	
+	/**
 	 * Size of training text.
 	 */
-	@Param({"10000"})
+	@Param({"8000"})
 	public int N;
 	
 	/**
 	 * Size of generated text.
 	 */
-	@Param({"1000"})
+	@Param({"500","1000","2000","4000","8000"})
 	public int T;
-	
-	/**
-	 * Order of the model.
-	 */
-	@Param({"2","3","6","12"})
-	public int k;
 
 	/**
 	 * Initialize MarkovConfig and the model.
@@ -62,9 +70,9 @@ public class MarkovBench {
 	@Setup(Level.Iteration)
 	public void init() throws Exception {
 		if (modelName.equals("BruteMarkov")) {
-			model = new BruteMarkov();
+			model = new BruteMarkov(k);
 		} else {
-			model = new EfficientMarkov();
+			model = new EfficientMarkov(k);
 		}
 		
 		src = TextSource.textFromFile(new File(TEXT_FILE))
@@ -89,11 +97,11 @@ public class MarkovBench {
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
-        		.result("markov_bench.txt")
+        		.result("result/markov_bench.txt")
         		.resultFormat(ResultFormatType.CSV)
                 .include(MarkovBench.class.getSimpleName())
-                .warmupIterations(5)
-                .measurementIterations(5)
+                .warmupIterations(10)
+                .measurementIterations(10)
                 .forks(1)
                 .build();
 
