@@ -38,7 +38,6 @@ public class MarkovBench {
 	public MarkovInterface<String> model;
 	public String src;
 	
-	
 	/**
 	 * Name of the model: BruteMarkov or EfficientMarkov
 	 */
@@ -54,13 +53,13 @@ public class MarkovBench {
 	/**
 	 * Size of training text.
 	 */
-	@Param({"8000"})
+	@Param({"1000","2000","4000","8000"})
 	public int N;
 	
 	/**
 	 * Size of generated text.
 	 */
-	@Param({"500","1000","2000","4000","8000"})
+	@Param({"1000","2000","4000","8000"})
 	public int T;
 
 	/**
@@ -81,12 +80,12 @@ public class MarkovBench {
 	}
 	
 	@Benchmark
-    public void testTraining() {
+    public void setTraining() {
 		model.setTraining(src);
     }
     
 	@Benchmark
-	public void testGetRandomText() {
+	public void getRandomText() {
 		int t = T;
 		String text = model.getRandomText(t);
 		while (text.length() < t) {

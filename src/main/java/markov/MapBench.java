@@ -19,7 +19,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
-import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -67,9 +66,9 @@ public class MapBench {
 			map = new IdentityHashMap<>();
 		} else if (mapType.equals("HashMap")) {
 			map = new HashMap<>();
-		} else {
+		} else if (mapType.equals("TreeMap")) {
 			map = new TreeMap<>();
-		}
+		} else { }
 		String[] text = TextSource.textFromFile(new File(TEXT_FILE)).split("\\s+");
 		HashSet<WordGram> set = new HashSet<>();
 		for (int i = 0; i < text.length-k; i++) {
