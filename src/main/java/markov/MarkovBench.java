@@ -47,19 +47,19 @@ public class MarkovBench {
 	/**
 	 * Order of the model.
 	 */
-	@Param({"6"})
+	@Param({"2","3","6","9","12","15","20","25","30"})
 	public int k;
 	
 	/**
 	 * Size of training text.
 	 */
-	@Param({"1000","2000","4000","8000"})
+	@Param({"4000"})
 	public int N;
 	
 	/**
 	 * Size of generated text.
 	 */
-	@Param({"1000","2000","4000","8000"})
+	@Param({"4000"})
 	public int T;
 
 	/**
