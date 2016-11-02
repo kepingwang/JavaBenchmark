@@ -1,0 +1,100 @@
+\documentclass[11pt]{article}
+
+\usepackage[bottom]{footmisc}
+\usepackage{courier}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{amsmath,amsfonts,amssymb,geometry,bm}
+\geometry{top=2cm}
+\usepackage{enumerate}
+\usepackage{listings}
+\usepackage[T1]{fontenc}
+
+\usepackage{color}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\footnotesize,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  numbers=left,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2  
+}
+
+\lstset{style=mystyle}
+
+% -------- Title Info
+\title{CS201 DNA Project Analysis\footnote{See \href{https://github.com/kepingwang/JavaBenchmark}{https://github.com/kepingwang/JavaBenchmark} for the full benchmarking project.}}
+\author{Keping Wang (netid: kw238)}
+
+
+% -------- The Document
+\begin{document}
+\maketitle
+
+\section{Benchmarking Method}
+I use the JMH framework for benchmarking. Please refer to my \href{https://github.com/kepingwang/JavaBenchmark/blob/master/result/analysis/analysis.pdf}{\underline{Markov Project Analysis}} for detailed explanation.
+
+I generate the testing data with the simplest method. The enzyme is always a single character ``B''. The splicee is a sequence of character ``S'' with length $S$. The source is the concatenation of $b$ ``B''s and $(N-b)$ ``x''s.
+
+For example, with $N=10$, $b=2$, $S=3$, the \texttt{cutAndSplice()} method (for \texttt{StringStrand}) would be:
+\begin{lstlisting}[language=Java]
+  String source = "BBxxxxxxxx";
+  String enzyme = "B";
+  String splicee= "SSS";
+  (new StringStrand(source)).cutAndSplice(enzyme, splicee);
+\end{lstlisting}
+
+\section{Non Linked List Hypotheses}
+
+From the following two figures, we know that the \texttt{cutAndSplice()} method of \texttt{StringStrand} is $O(b^2S)$.
+
+\centerline{\includegraphics[width=0.6\linewidth]{StringStrand_N100000_xb_all.pdf}}
+
+\centerline{\includegraphics[width=0.6\linewidth]{StringStrand_N100000_xS_all.pdf}}
+
+From the following two figures, we know that the \texttt{cutAndSplice()} method of \texttt{StringBuilderStrand} is $O(bS)$.
+
+\centerline{\includegraphics[width=0.6\linewidth]{StringBuilderStrand_N100000_xb_all.pdf}}
+
+\centerline{\includegraphics[width=0.6\linewidth]{StringBuilderStrand_N100000_xS_all.pdf}}
+
+From the following two figures, we confirm that $b$ and $S$ are multiplied in the run time of non linked list strands because the run time is quadratic/linear in $b$ even when $b$ is very small relative to $S$.
+
+\centerline{\includegraphics[width=0.6\linewidth]{StringStrand_N100000_xb.pdf}}
+
+\centerline{\includegraphics[width=0.6\linewidth]{StringBuilderStrand_N100000_xb.pdf}}
+
+Finally the running time of \texttt{cutAndSplice()} for both \texttt{StringStrand} and \texttt{StringBuilderStrand} have to be at least $O(n)$, since the method has to go through the whole strand to find pieces that matches the enzyme.
+
+\section{LinkStrand Hypothesis}
+
+From the following figure, we can see that the run time of \texttt{cutAndSplice()} int \texttt{LinkStrand} is irrelevant to $S$ (of course when $S$ is much smaller than $N$).
+
+\centerline{\includegraphics[width=0.6\linewidth]{LinkStrand_N1000000_xS.pdf}}
+
+From the two following figures, we notice that the run time of \texttt{cutAndSplice()} int \texttt{LinkStrand} is linear in both $N$ and $b$. Besides, when $b$ becomes very small relative to $N$, the run time is dominated by $N$, so we know that the run time is $O(b+N)$ (instead of $O(bN)$).
+
+\centerline{\includegraphics[width=0.6\linewidth]{LinkStrand_S10000_xN_all.pdf}}
+
+\centerline{\includegraphics[width=0.6\linewidth]{LinkStrand_S10000_xN.pdf}}
+
+\centerline{\includegraphics[width=0.6\linewidth]{LinkStrand_S10000_xb_all.pdf}}
+
+
+\end{document}

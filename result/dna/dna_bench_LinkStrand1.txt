@@ -1,0 +1,9 @@
+"Benchmark","Mode","Threads","Samples","Score","Score Error (99.9%)","Unit","Param: N","Param: S","Param: b","Param: modelName"
+"dna.DNABench.cutAndSplice","avgt",1,10,43.643126,13.051705,"ms/op",1000000,10000,1000000,LinkStrand
+"dna.DNABench.cutAndSplice","avgt",1,10,151.850641,151.366368,"ms/op",1000000,10000,2000000,LinkStrand
+"dna.DNABench.cutAndSplice","avgt",1,10,37.455397,8.653077,"ms/op",1000000,20000,1000000,LinkStrand
+"dna.DNABench.cutAndSplice","avgt",1,10,140.894304,74.448402,"ms/op",1000000,20000,2000000,LinkStrand
+"dna.DNABench.cutAndSplice","avgt",1,10,50.203213,13.081620,"ms/op",2000000,10000,1000000,LinkStrand
+"dna.DNABench.cutAndSplice","avgt",1,10,138.627470,59.203739,"ms/op",2000000,10000,2000000,LinkStrand
+"dna.DNABench.cutAndSplice","avgt",1,10,48.798918,10.127786,"ms/op",2000000,20000,1000000,LinkStrand
+"dna.DNABench.cutAndSplice","avgt",1,10,134.542706,36.951422,"ms/op",2000000,20000,2000000,LinkStrand

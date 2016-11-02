@@ -34,29 +34,29 @@ public class DNABench {
 	private final String enzyme = "B";
 	private String splicee;
 	
-	
 	/**
 	 * Name of the DnaStrand model.
+	 * StringStrand, StringBuilderStrand, LinkStrand
 	 */
-	@Param({"StringStrand", "StringBuilderStrand", "LinkStrand"})
+	@Param({"StringStrand","StringBuilderStrand"})
 	public String modelName;
 	
 	/**
 	 * Number of breaks (additions).
 	 */
-	@Param({"10","20"})
+	@Param({"10", "20", "40"})
 	public int b; 
 	
 	/**
 	 * Length of the splicee.
 	 */
-	@Param({"100","200"})
+	@Param({"100000"})
 	public int S;
 	
 	/**
 	 * Total length of the strand. 
 	 */
-	@Param({"100000","200000"})
+	@Param({"100000"})
 	public int N;
 	
 	
@@ -82,11 +82,11 @@ public class DNABench {
 		}
 		splicee = sbSplicee.toString();
 		
-		if (model.equals("StringStrand")) {
+		if (modelName.equals("StringStrand")) {
 			model = new StringStrand(source);
-		} else if (model.equals("StringBuilderStrand")) {
+		} else if (modelName.equals("StringBuilderStrand")) {
 			model = new StringBuilderStrand(source);
-		} else if (model.equals("LinkStrand")) {
+		} else if (modelName.equals("LinkStrand")) {
 			model = new LinkStrand(source);
 		} else {
 			throw new Exception("Wrong model name");
