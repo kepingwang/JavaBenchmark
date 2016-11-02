@@ -54,6 +54,11 @@
 			<artifactId>markov</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>keping.duke.edu</groupId>
+			<artifactId>cs201-dna</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<properties>
